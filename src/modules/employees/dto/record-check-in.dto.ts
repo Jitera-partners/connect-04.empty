@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsInt, IsDate } from 'class-validator';
+
+import { IsNotEmpty, IsInt, IsDate, IsString, Equals } from 'class-validator';
 
 export class RecordCheckInDto {
   @IsNotEmpty({ message: 'Employee ID must not be empty' })
@@ -12,4 +13,9 @@ export class RecordCheckInDto {
   @IsNotEmpty({ message: 'Check-in time must not be empty' })
   @IsDate({ message: 'Check-in time must be a valid datetime' })
   checkInTime: Date;
+
+  @IsNotEmpty({ message: 'Action must not be empty' })
+  @IsString({ message: 'Action must be a string' })
+  @Equals('check_in', { message: 'Invalid action type.' })
+  action: string;
 }

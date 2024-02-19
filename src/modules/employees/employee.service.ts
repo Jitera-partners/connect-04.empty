@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { EmployeeRepository } from 'src/repositories/employees.repository';
+ { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { EmployeeRepository } from 'src/repositories/employees.repository'; // Ensure this is the correct path
 import { CheckInRepository } from 'src/repositories/check-ins.repository';
 import { AttendanceRecordRepository } from 'src/repositories/attendance-records.repository'; // New import
 import { Employee } from 'src/entities/employees';
@@ -41,26 +41,33 @@ export class EmployeeService {
     return { message: 'Check-in successful' };
   }
 
-  async logCheckInAction(employeeId: number, action: string, timestamp: Date): Promise<{ message: string }> {
+  async logCheckInAction(employeeId: number, action: string, timestamp: Date): Promise<{ message: string; status?: number; log?: any }> {
     const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
 
-    if (!employee || !employee.logged_in) {
-      throw new NotFoundException(`Employee with ID ${employeeId} not found or not logged in.`);
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found.`);
     }
 
-    const newLogEntry = new CheckIn();
+    if (typeof action !== 'string') {
+      throw new BadRequestException('Invalid action type.');
+    }
+
+    const newLogEntry = this.checkInRepository.create(); // Use repository create method
     newLogEntry.employee_id = employeeId;
     newLogEntry.action = action; // Assuming action is a valid property of CheckIn entity
     newLogEntry.check_in_time = timestamp;
 
-    try {
-      await this.checkInRepository.save(newLogEntry);
-    } catch (error) {
-      throw new BadRequestException('Failed to log check-in action.');
-    }
+    await this.checkInRepository.save(newLogEntry);
 
     return {
-      message: `Check-in action '${action}' for employee ID ${employeeId} has been logged at ${timestamp.toISOString()}.`
+      status: 200,
+      message: "Check-in action logged successfully",
+      log: {
+        id: newLogEntry.id,
+        employee_id: newLogEntry.employee_id,
+        action: newLogEntry.action,
+        created_at: newLogEntry.created_at.toISOString()
+      }
     };
   }
 
