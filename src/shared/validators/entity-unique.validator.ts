@@ -1,3 +1,4 @@
+
 import {
   registerDecorator,
   ValidationArguments,
@@ -7,6 +8,7 @@ import {
 } from 'class-validator'
 import { Injectable } from '@nestjs/common'
 import { EntitySchema, Not, DataSource, ObjectType, FindOptionsWhere } from 'typeorm'
+import { CheckIn } from 'src/entities/check_ins'
 
 export interface UniqueValidationArguments<E> extends ValidationArguments {
   constraints: [EntitySchema<E> | ObjectType<E>]
@@ -40,6 +42,19 @@ export class EntityUniqueValidator implements ValidatorConstraintInterface {
     return `A ${this.dataSource.getRepository(args.constraints[0]).metadata.tableName} with this ${
       args.property
     } already exists`
+  }
+
+  async isCheckInUnique(employeeId: number, checkInDate: Date): Promise<boolean> {
+    const checkInRepo = this.dataSource.getRepository(CheckIn);
+
+    const existingCheckIn = await checkInRepo.findOne({
+      where: {
+        employee_id: employeeId,
+        check_in_date: checkInDate
+      }
+    });
+
+    return !existingCheckIn;
   }
 }
 
