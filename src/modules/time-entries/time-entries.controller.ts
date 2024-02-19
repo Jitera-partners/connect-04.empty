@@ -1,16 +1,22 @@
 import {
   Controller,
+  Post,
   Put,
-  Param,
   Body,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  BadRequestException,
+  UnprocessableEntityException,
+  Param,
   ParseIntPipe,
   HttpException,
-  HttpStatus,
-  UseGuards,
 } from '@nestjs/common';
-import { TimeEntriesService } from './time-entries.service';
-import { UpdateTimeEntryDto } from './dto/update-time-entry.dto';
+import { AuthGuard as NestAuthGuard } from '@nestjs/passport';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { ValidateTimeEntryDto } from './dto/validate-time-entry.dto';
+import { UpdateTimeEntryDto } from './dto/update-time-entry.dto';
+import { TimeEntriesService } from './time-entries.service';
 import { PermissionsService } from '../permissions/permissions.service';
 
 @Controller('api/time-entries')
@@ -19,6 +25,21 @@ export class TimeEntriesController {
     private readonly timeEntriesService: TimeEntriesService,
     private readonly permissionsService: PermissionsService,
   ) {}
+
+  @Post('validate')
+  @UseGuards(NestAuthGuard())
+  @HttpCode(HttpStatus.OK)
+  async validateTimeEntry(@Body() validateTimeEntryDto: ValidateTimeEntryDto) {
+    try {
+      await this.timeEntriesService.validateTimeEntry(validateTimeEntryDto);
+      return { status: HttpStatus.OK, message: 'Time entry data is valid.' };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new UnprocessableEntityException(error.response);
+      }
+      throw error;
+    }
+  }
 
   @Put(':id')
   @UseGuards(AuthGuard)
