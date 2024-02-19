@@ -1,5 +1,6 @@
 
 import { IsInt } from 'class-validator';
+import { IsDate } from 'class-validator';
 
 export class RecordCheckOutDto {
   @IsInt({ message: 'Invalid employee ID format.' })

@@ -1,3 +1,4 @@
+
 import { Injectable } from '@nestjs/common';
 import { AttendanceRecordRepository } from 'src/repositories/attendance-records.repository';
 import { AttendanceRecord } from 'src/entities/attendance_records';
@@ -31,5 +32,21 @@ export class AttendanceService {
     await this.attendanceRecordRepository.save(attendanceRecord);
 
     return { message: 'Check-out time has been recorded successfully.' };
+  }
+
+  async filterAttendanceRecords(query: any): Promise<{ records: AttendanceRecord[], totalPages: number }> {
+    // Implement the logic to filter attendance records based on the query parameters
+    // This is a placeholder implementation and should be replaced with actual logic
+    const [records, total] = await this.attendanceRecordRepository.findAndCount({
+      where: query, // Replace with actual query conditions
+      // Add pagination logic if needed
+    });
+
+    const totalPages = Math.ceil(total / (query.limit || 10)); // Assuming default limit is 10
+
+    return {
+      records: records,
+      totalPages: totalPages,
+    };
   }
 }
