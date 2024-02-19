@@ -1,11 +1,12 @@
+
 {
   "name": "your-package-name",
   "version": "1.0.0",
   "description": "Your package description",
   "main": "index.js",
   "scripts": {
-    "build": "nest build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "nest build"
   },
   "author": "",
   "license": "ISC"
