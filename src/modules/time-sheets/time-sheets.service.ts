@@ -13,15 +13,15 @@ export class TimeSheetsService {
   constructor(private readonly timeSheetRepository: TimeSheetRepository) {}
 
   async viewPastTimeSheets(params: ViewPastTimeSheetsDto): Promise<{ timeEntries: TimeSheet[]; message?: string; }> {
-    const { user_id, selectedMonth, selectedYear } = params; // Changed userId to user_id
+    const { user_id, selectedMonth, selectedYear } = params;
     const currentDate = moment();
     const selectedDate = moment(`${selectedYear}-${selectedMonth}`, 'YYYY-MM');
-    const timeEntries: TimeSheet[] = await this.timeSheetRepository.find({ // Type added to timeEntries
+    const timeEntries = await this.timeSheetRepository.find({
       where: {
-        user_id: Number(user_id), // Ensure user_id is a number
+        user_id: Number(user_id),
         date: Between(
-          new Date(selectedDate.startOf('month').format('YYYY-MM-DD')), // Wrapped with new Date()
-          new Date(selectedDate.endOf('month').format('YYYY-MM-DD')) // Wrapped with new Date()
+          new Date(selectedDate.startOf('month').format('YYYY-MM-DD')),
+          new Date(selectedDate.endOf('month').format('YYYY-MM-DD'))
         )
       }
     });
@@ -36,30 +36,27 @@ export class TimeSheetsService {
 
     const formattedTimeEntries = timeEntries.map(entry => ({
       date: entry.date,
-      day_type: entry.day_type, // Changed to day_type
-      checkInTime: entry.check_in_time,
-      checkOutTime: entry.check_out_time,
-      total_hours: entry.total_hours // Changed to total_hours
-    })).map(entry => ({ // Added map to include id, created_at, updated_at, and day_type
-      ...entry,
+      day_type: entry.day_type,
+      check_in_time: entry.check_in_time,
+      check_out_time: entry.check_out_time,
+      total_hours: entry.total_hours,
       id: entry.id,
       created_at: entry.created_at,
-      updated_at: entry.updated_at,
-      day_type: entry.day_type
+      updated_at: entry.updated_at
     }));
 
     return { timeEntries: formattedTimeEntries };
   }
 
   async viewCurrentMonthTimeSheet(userId: number): Promise<{ status: number; time_sheets: any[]; message?: string; }> {
-    const { month, year } = getCurrentMonthAndYear(); // Use the utility function to get the current month and year
+    const { month, year } = getCurrentMonthAndYear();
     const startDate = moment(`${year}-${month}-01`, 'YYYY-MM-DD').startOf('month').toDate();
     const endDate = moment(startDate).endOf('month').toDate();
 
     const timeEntries = await this.timeSheetRepository.find({
-      where: { user_id: userId, date: Between(startDate, endDate) }, // Corrected where clause
+      where: { user_id: userId, date: Between(startDate, endDate) },
       order: {
-        date: 'ASC' // Ensure the time entries are ordered by date in ascending order
+        date: 'ASC'
       }
     });
 
@@ -67,15 +64,14 @@ export class TimeSheetsService {
       return { status: 200, time_sheets: [], message: 'No time sheet records found for the current month.' };
     }
 
-    // Format the time entries to match the required response structure
     const formattedTimeEntries = timeEntries.map(entry => {
       return {
         id: entry.id,
         date: entry.date,
-        day_type: entry.day_type, // Changed to day_type
-        checkInTime: entry.check_in_time,
-        checkOutTime: entry.check_out_time,
-        totalHours: entry.total_hours || moment(entry.check_out_time).diff(moment(entry.check_in_time), 'hours', true), // Added calculation for totalHours if not present
+        day_type: entry.day_type,
+        check_in_time: entry.check_in_time,
+        check_out_time: entry.check_out_time,
+        totalHours: entry.total_hours || moment(entry.check_out_time).diff(moment(entry.check_in_time), 'hours', true),
         user_id: entry.user_id
       };
     });
@@ -83,9 +79,8 @@ export class TimeSheetsService {
     return { status: 200, time_sheets: formattedTimeEntries };
   }
 
-  // Added new method
   async viewSelectedMonthTimeSheet(params: ViewSelectedMonthTimeSheetDto): Promise<{ status: number; time_sheets?: TimeSheet[]; message?: string; }> {
-    const { user_id, month, year } = params; // Add year to the destructured parameters
+    const { user_id, month, year } = params;
 
     if (!user_id) {
       throw new Error('User ID is required.');
@@ -95,21 +90,21 @@ export class TimeSheetsService {
       throw new Error('User ID must be an integer.');
     }
 
-    if (!month || !year) { // Check for both month and year
-      throw new Error('Month and Year are required.'); // Update error message to include year
+    if (!month || !year) {
+      throw new Error('Month and Year are required.');
     }
 
-    if (!moment(`${year}-${month}`, 'YYYY-MM', true).isValid()) { // Check for valid year and month
+    if (!moment(`${year}-${month}`, 'YYYY-MM', true).isValid()) {
       throw new Error('Month must be in the format YYYY-MM.');
     }
 
-    const startDate = moment(`${year}-${month}-01`, 'YYYY-MM-DD').startOf('month').toDate(); // Convert to Date object
-    const endDate = moment(startDate).endOf('month').toDate(); // Convert to Date object
+    const startDate = moment(`${year}-${month}-01`, 'YYYY-MM-DD').startOf('month').toDate();
+    const endDate = moment(startDate).endOf('month').toDate();
 
     const timeSheets = await this.timeSheetRepository.find({
       where: { user_id, date: Between(startDate, endDate) }
     });
 
-    return { status: 200, time_sheets: timeSheets.map(ts => ({ ...ts, day_type: ts.day_type })) }; // Added map to include day_type
+    return { status: 200, time_sheets: timeSheets.map(ts => ({ ...ts, day_type: ts.day_type })) };
   }
 }
