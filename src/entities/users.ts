@@ -61,6 +61,11 @@ export class User {
   @OneToOne(() => Permission, (permission) => permission.user, { cascade: true })
   permission: Permission;
 
+  @OneToOne(() => Employee, (employee) => employee.user)
+  @JoinColumn({ name: 'employee_id' })
+  employee: Employee;
+
+
   @OneToOne(() => Employee, (employee) => employee.user, { onDelete: 'CASCADE' })
   employee: Employee;
 }

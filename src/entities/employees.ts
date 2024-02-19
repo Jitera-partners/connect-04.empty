@@ -46,7 +46,7 @@ export class Employee {
   @Column({ nullable: true, type: 'integer' })
   user_id: number;
 
-  @OneToOne(() => User, (user) => user.employee, { onDelete: 'CASCADE' })
+  @OneToOne(() => User, (user) => user.employee, { onDelete: 'CASCADE', cascade: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
@@ -61,6 +61,5 @@ export class Employee {
   attendance_records: AttendanceRecord[];
 
   @OneToMany(() => TimeEntry, (timeEntry) => timeEntry.employee, { cascade: true })
-  @JoinColumn({ name: 'employee_id' })
   time_entries: TimeEntry[];
 }

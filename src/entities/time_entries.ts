@@ -42,6 +42,11 @@ export class TimeEntry {
   @Column({ nullable: true, type: 'integer' })
   employee_id: number;
 
+  @ManyToOne(() => Employee, (employee) => employee.time_entries)
+  @JoinColumn({ name: 'employee_id' })
+  employee: Employee;
+
+
   @ManyToOne(() => User, (user) => user.time_entries, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
