@@ -1,9 +1,8 @@
-
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { EmployeeRepository } from 'src/repositories/employees.repository';
 import { CheckInRepository } from 'src/repositories/check-ins.repository';
-import { Employee } from 'src/entities/employees';
 import { CheckIn } from 'src/entities/check_ins';
+import { Employee } from 'src/entities/employees';
 
 @Injectable()
 export class EmployeeService {
@@ -11,6 +10,28 @@ export class EmployeeService {
     private employeeRepository: EmployeeRepository,
     private checkInRepository: CheckInRepository
   ) {}
+
+  async updateEmployeeCheckInStatus(employeeId: number, loggedIn: boolean): Promise<{ message: string }> {
+    const employee = await this.employeeRepository.findOne(employeeId);
+    if (!employee) {
+      throw new NotFoundException('Employee not found.');
+    }
+
+    if (employee.logged_in) {
+      throw new BadRequestException('Employee is already checked in.');
+    }
+
+    employee.logged_in = loggedIn;
+    employee.updated_at = new Date();
+    await this.employeeRepository.save(employee);
+
+    const newCheckIn = new CheckIn();
+    newCheckIn.employee_id = employeeId;
+    newCheckIn.check_in_time = new Date();
+    await this.checkInRepository.save(newCheckIn);
+
+    return { message: 'Employee check-in status updated successfully.' };
+  }
 
   async checkInEmployee(employeeId: number, checkInTime: Date, checkInDate: Date): Promise<{ message: string }> {
     const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
@@ -62,5 +83,4 @@ export class EmployeeService {
       message: `Check-in action '${action}' for employee ID ${employeeId} has been logged at ${timestamp.toISOString()}.`
     };
   }
-
 }
