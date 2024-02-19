@@ -1,7 +1,7 @@
 import { IsBoolean, IsDate, IsInt, IsNotEmpty } from 'class-validator';
 
 export class UpdateTimeEntryDto {
-  @IsInt()
+  @IsInt({ message: 'Invalid time entry ID format.' })
   @IsNotEmpty()
   id: number;
 
@@ -9,11 +9,11 @@ export class UpdateTimeEntryDto {
   @IsNotEmpty()
   user_id: number;
 
-  @IsDate()
+  @IsDate({ message: 'Invalid datetime format.' })
   @IsNotEmpty()
   check_in: Date;
 
-  @IsDate()
+  @IsDate({ message: 'Invalid datetime format.' })
   check_out: Date;
 
   @IsBoolean()
