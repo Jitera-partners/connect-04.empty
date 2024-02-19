@@ -50,8 +50,4 @@ export class TimeEntry {
   @ManyToOne(() => User, (user) => user.time_entries, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @ManyToOne(() => Employee, (employee) => employee.time_entries)
-  @JoinColumn({ name: 'employee_id' })
-  employee: Employee;
 }

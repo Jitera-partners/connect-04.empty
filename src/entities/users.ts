@@ -1,3 +1,4 @@
+
 import {
   Entity,
   Column,
@@ -61,10 +62,7 @@ export class User {
   @OneToOne(() => Permission, (permission) => permission.user, { cascade: true })
   permission: Permission;
 
-  @OneToOne(() => Employee, (employee) => employee.user)
-  @JoinColumn({ name: 'employee_id' })
-  employee: Employee;
-
+  // Removed duplicate employee declaration
 
   @OneToOne(() => Employee, (employee) => employee.user, { onDelete: 'CASCADE' })
   employee: Employee;

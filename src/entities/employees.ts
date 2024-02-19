@@ -1,7 +1,6 @@
 
 import {
   Entity,
-  OneToMany,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
@@ -14,6 +13,7 @@ import { User } from '@entities/users';
 import { CheckIn } from '@entities/check_ins';
 import { AttendanceRecord } from '@entities/attendance_records';
 import { TimeEntry } from '@entities/time_entries';
+import { TimeSheet } from '@entities/time_sheets'; // Assuming TimeSheet entity exists and is imported correctly
 
 @Entity('employees')
 export class Employee {
@@ -35,6 +35,7 @@ export class Employee {
   @Column({ nullable: true, type: 'varchar' })
   password_hash: string;
 
+  @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.employee)
   @Column({ nullable: true, type: 'boolean', default: false })
   logged_in: boolean = false;
 
@@ -55,13 +56,12 @@ export class Employee {
   @JoinColumn({ name: 'employee_id' })
   time_sheets: TimeSheet[];
 
-
   @OneToMany(() => CheckIn, (checkIn) => checkIn.employee, { cascade: true })
   @JoinColumn({ name: 'employee_id' })
   check_ins: CheckIn[];
 
   @OneToMany(() => AttendanceRecord, (attendanceRecord) => attendanceRecord.employee, {
-    cascade: true,
+    cascade: true
   })
   @JoinColumn({ name: 'employee_id' })
   attendance_records: AttendanceRecord[];
