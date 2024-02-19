@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { EmployeeRepository } from '@repositories/employees.repository'; // Updated import
+import { EmployeeRepository } from 'src/repositories/employees.repository';
+import { isNumber } from 'util'; // Added import
 import { CheckInRepository } from 'src/repositories/check-ins.repository';
 import { AttendanceRecordRepository } from 'src/repositories/attendance-records.repository';
 import { Employee } from 'src/entities/employees';
@@ -18,8 +19,6 @@ export class EmployeeService {
 
     if (!employee || !employee.logged_in) {
       throw new BadRequestException('Employee must be logged in to check in.');
-    } else if (isNaN(employeeId)) {
-      throw new BadRequestException('Invalid employee ID format.');
     }
 
     const checkInRecord = await this.checkInRepository.findOne({
@@ -36,7 +35,7 @@ export class EmployeeService {
     const newCheckIn = new CheckIn();
     newCheckIn.employee_id = employeeId;
     newCheckIn.check_in_time = checkInTime;
-    newCheckIn.check_in_date = checkInDate; // Ensure the date is set correctly
+    newCheckIn.check_in_date = checkInDate;
 
     await this.checkInRepository.save(newCheckIn);
 
@@ -44,10 +43,10 @@ export class EmployeeService {
   }
 
   async logCheckInAction(employeeId: number, action: string, timestamp: Date): Promise<{ message: string; status?: number; log?: any }> {
-    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } }); // Ensure employee exists
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
 
-    if (!employee || !employee.logged_in) {
-      throw new NotFoundException(`Employee with ID ${employeeId} not found or not logged in.`);
+    if (!employee) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found.`);
     }
 
     if (typeof action !== 'string') {
@@ -56,7 +55,7 @@ export class EmployeeService {
 
     const newLogEntry = this.checkInRepository.create(); // Use repository create method
     newLogEntry.employee_id = employeeId;
-    newLogEntry.action = action; // Validate the action property
+    newLogEntry.action = action; // Assuming action is a valid property of CheckIn entity
     newLogEntry.check_in_time = timestamp;
 
     try {
@@ -78,7 +77,7 @@ export class EmployeeService {
   }
 
   async recordCheckInTime(employeeId: number, date: Date, checkInTime: Date): Promise<{ message: string; check_in_time?: Date; date?: Date; }> {
-    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } }); // Check if employee exists and is logged in
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
 
     if (!employee || !employee.logged_in) {
       throw new BadRequestException('Invalid employee ID or employee is not logged in.');
@@ -86,7 +85,7 @@ export class EmployeeService {
 
     const existingRecord = await this.attendanceRecordRepository.findOne({
       where: {
-        employee_id: employeeId, // Check for existing check-in record
+        employee_id: employeeId,
         date: date
       }
     });
@@ -103,8 +102,31 @@ export class EmployeeService {
       updated_at: new Date()
     });
 
-    await this.attendanceRecordRepository.save(newRecord); // Save the new check-in record
+    await this.attendanceRecordRepository.save(newRecord);
 
     return { message: 'Check-in time has been recorded.', check_in_time: checkInTime, date: date };
+  }
+
+  async updateCheckInStatus(employeeId: number): Promise<{ message: string; employee: { id: number; logged_in: boolean; } }> {
+    if (!isNumber(employeeId)) {
+      throw new BadRequestException('Invalid employee ID format.');
+    }
+
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+
+    if (!employee) {
+      throw a new NotFoundException('Employee not found.');
+    }
+
+    employee.logged_in = !employee.logged_in; // Toggle the logged_in status
+    await this.employeeRepository.save(employee);
+
+    return {
+      message: 'Check-in status updated successfully',
+      employee: {
+        id: employee.id,
+        logged_in: employee.logged_in
+      }
+    };
   }
 }
