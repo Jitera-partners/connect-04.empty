@@ -1,40 +1,40 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('storage_files')
 export class StorageFile {
   @PrimaryGeneratedColumn()
   @Column({ type: 'integer', primary: true })
-  id: number
+  id: number;
 
   @Column({ nullable: false, type: 'varchar' })
-  file_path: string
+  file_path: string;
 
   @Column({ nullable: false, type: 'varchar' })
-  origin_name: string
+  origin_name: string;
 
   @Column({ nullable: false, type: 'varchar' })
-  mime_type: string
+  mime_type: string;
 
   @Column({ nullable: false, type: 'varchar' })
-  checksum: string
+  checksum: string;
 
   @Column({ nullable: false, type: 'integer' })
-  size: number
+  size: number;
 
   @Column({ nullable: false, type: 'varchar' })
-  disk: string
+  disk: string;
 
   @Column({ nullable: true, type: 'integer' })
-  uploader_id?: number
+  uploader_id?: number;
 
   // Virtual column
-  url: string
+  url: string;
 
   @Column({ nullable: true, type: 'timestamp' })
   @CreateDateColumn()
-  created_at: Date
+  created_at: Date;
 
   @Column({ nullable: true, type: 'timestamp' })
   @CreateDateColumn()
-  updated_at: Date
+  updated_at: Date;
 }
