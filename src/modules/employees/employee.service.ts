@@ -1,3 +1,4 @@
+
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { EmployeeRepository } from 'src/repositories/employees.repository';
 import { CheckInRepository } from 'src/repositories/check-ins.repository';
@@ -38,4 +39,28 @@ export class EmployeeService {
 
     return { message: 'Check-in successful' };
   }
+
+  async logCheckInAction(employeeId: number, action: string, timestamp: Date): Promise<{ message: string }> {
+    const employee = await this.employeeRepository.findOne({ where: { id: employeeId } });
+
+    if (!employee || !employee.logged_in) {
+      throw new NotFoundException(`Employee with ID ${employeeId} not found or not logged in.`);
+    }
+
+    const newLogEntry = new CheckIn();
+    newLogEntry.employee_id = employeeId;
+    newLogEntry.action = action;
+    newLogEntry.check_in_time = timestamp;
+
+    try {
+      await this.checkInRepository.save(newLogEntry);
+    } catch (error) {
+      throw new BadRequestException('Failed to log check-in action.');
+    }
+
+    return {
+      message: `Check-in action '${action}' for employee ID ${employeeId} has been logged at ${timestamp.toISOString()}.`
+    };
+  }
+
 }
