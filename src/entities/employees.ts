@@ -1,6 +1,7 @@
 
 import {
   Entity,
+  OneToMany,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
@@ -49,6 +50,11 @@ export class Employee {
   @OneToOne(() => User, (user) => user.employee, { onDelete: 'CASCADE', cascade: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.employee, { cascade: true })
+  @JoinColumn({ name: 'employee_id' })
+  time_sheets: TimeSheet[];
+
 
   @OneToMany(() => CheckIn, (checkIn) => checkIn.employee, { cascade: true })
   @JoinColumn({ name: 'employee_id' })
