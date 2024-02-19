@@ -51,7 +51,6 @@ export class TimeEntriesController {
   ) {
     try {
       const user = // Get the authenticated user from the request context (not shown in the example)
-      ;
       const hasPermission = await this.permissionsService.checkEditTimeEntryPermission(user.id, user.role);
       if (!hasPermission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);

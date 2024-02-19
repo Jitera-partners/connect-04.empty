@@ -15,8 +15,10 @@ export interface UpdateTimeEntryDto {
 @Injectable()
 export class TimeEntriesRepository extends Repository<TimeEntry> {
   constructor(
-    @InjectRepository(TimeEntry) private readonly timeEntryRepository: Repository<TimeEntry>,
-  ) {}
+    @InjectRepository(TimeEntry) private readonly timeEntryRepository: Repository<TimeEntry>
+  ) {
+    super();
+  }
 
   async updateTimeEntry(updateTimeEntryDto: UpdateTimeEntryDto): Promise<string> {
     const { id, user_id, check_in, check_out, is_edited } = updateTimeEntryDto;
