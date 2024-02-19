@@ -20,7 +20,7 @@ export class TimeEntriesService {
       const timeEntry = await this.timeEntryRepository.findOneBy({ id, user_id });
 
       if (!timeEntry) {
-        throw new BadRequestException('Time entry not found.');
+        throw new BadRequestException('Time entry not found for the provided user.');
       }
 
       // Before updating, validate the check-in and check-out times
@@ -45,8 +45,8 @@ export class TimeEntriesService {
   async validateTimeEntry(dto: ValidateTimeEntryDto): Promise<string> {
     const { check_in, check_out } = dto;
 
-    const validationOptions = { check_in: check_in, check_out: check_out };
-    if (!ValidateTimeEntry(validationOptions)) { // Corrected to pass an object
+    const validationOptions = { check_in: check_in.toISOString(), check_out: check_out.toISOString() };
+    if (!ValidateTimeEntry(validationOptions.check_in, validationOptions.check_out)) { // Corrected to pass individual parameters
       throw new BadRequestException('Validation failed: check-in time must be before check-out time.'); // Updated exception
     }
 
