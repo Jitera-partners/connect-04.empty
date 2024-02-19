@@ -1,7 +1,8 @@
-import { IsInt, IsDate } from 'class-validator';
+
+import { IsInt } from 'class-validator';
 
 export class RecordCheckOutDto {
-  @IsInt({ message: 'Employee ID must be an integer' })
+  @IsInt({ message: 'Invalid employee ID format.' })
   employeeId: number;
 
   @IsDate({ message: 'Check-out time must be a valid date' })
