@@ -11,6 +11,7 @@ import {
 import { TimeSheet } from '@entities/time_sheets';
 import { TimeEntry } from '@entities/time_entries';
 import { Permission } from '@entities/permissions';
+import { Employee } from '@entities/employees';
 
 enum RoleEnum {
   EMPLOYEE = 'employee',
@@ -59,6 +60,9 @@ export class User {
 
   @OneToOne(() => Permission, (permission) => permission.user, { cascade: true })
   permission: Permission;
+
+  @OneToOne(() => Employee, (employee) => employee.user, { cascade: true })
+  employee: Employee;
 }
 
 export { RoleEnum };

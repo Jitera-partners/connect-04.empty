@@ -4,11 +4,15 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
+import { User } from '@entities/users';
 import { CheckIn } from '@entities/check_ins';
 import { AttendanceRecord } from '@entities/attendance_records';
+import { TimeEntry } from '@entities/time_entries';
+import { TimeSheet } from '@entities/time_sheets';
 
 @Entity('employees')
 export class Employee {
@@ -39,6 +43,13 @@ export class Employee {
   @Column({ nullable: true, type: 'varchar' })
   email: string;
 
+  @Column({ nullable: true, type: 'integer' })
+  user_id: number;
+
+  @OneToOne(() => User, (user) => user.employee, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
   @OneToMany(() => CheckIn, (checkIn) => checkIn.employee, { cascade: true })
   @JoinColumn({ name: 'employee_id' })
   check_ins: CheckIn[];
@@ -48,4 +59,12 @@ export class Employee {
   })
   @JoinColumn({ name: 'employee_id' })
   attendance_records: AttendanceRecord[];
+
+  @OneToMany(() => TimeEntry, (timeEntry) => timeEntry.employee, { cascade: true })
+  @JoinColumn({ name: 'employee_id' })
+  time_entries: TimeEntry[];
+
+  @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.employee, { cascade: true })
+  @JoinColumn({ name: 'employee_id' })
+  time_sheets: TimeSheet[];
 }
