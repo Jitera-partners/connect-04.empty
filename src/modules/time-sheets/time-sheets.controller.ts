@@ -63,7 +63,7 @@ export class TimeSheetsController {
   async viewSelectedMonthTimeSheet(@Query() query: ViewSelectedMonthTimeSheetDto) {
     try {
       const { user_id, month } = query;
-      const timeSheets = await this.timeSheetsService.viewSelectedMonthTimeSheet(user_id, month);
+      const timeSheets = await this.timeSheetsService.viewSelectedMonthTimeSheet({ user_id, month });
       return {
         status: HttpStatus.OK,
         time_sheets: timeSheets

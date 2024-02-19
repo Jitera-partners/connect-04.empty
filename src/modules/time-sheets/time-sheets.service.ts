@@ -42,7 +42,7 @@ export class TimeSheetsService {
       totalHours: entry.total_hours
     }));
 
-    return { timeEntries: formattedTimeEntries as TimeSheet[] };
+    return { timeEntries: formattedTimeEntries };
   }
 
   async viewCurrentMonthTimeSheet(userId: number): Promise<{ status: number; time_sheets: any[]; message?: string; }> {
