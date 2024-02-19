@@ -1,5 +1,5 @@
 import { IsDate, Validate } from 'class-validator';
-import { ValidateTimeEntry } from '../validators/validate-time-entry.validator';
+import { ValidateTimeEntry } from '../../../shared/validators/validate-time-entry.validator';
 
 export class ValidateTimeEntryDto {
   @IsDate({ message: 'Check-in must be a valid date.' })

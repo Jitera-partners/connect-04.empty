@@ -1,6 +1,8 @@
-import { HealthCheckModule } from './health-check/health-check.module';
-import { AttendanceModule } from './attendance/attendance.module';
-import { EmployeesModule } from './employees/employees.module';
-import { TimeEntriesModule } from './time-entries/time-entries.module';
 
-export default [HealthCheckModule, AttendanceModule, EmployeesModule, TimeEntriesModule];
+import { HealthCheckModule } from './health-check/health-check.module';
+import { AttendanceModule } from '../attendance/attendance.module';
+import { EmployeesModule } from '../employees/employees.module';
+import { TimeEntriesModule } from './time-entries/time-entries.module';
+import { PermissionsModule } from './permissions/permissions.module';
+
+export default [HealthCheckModule, AttendanceModule, EmployeesModule, TimeEntriesModule, PermissionsModule];

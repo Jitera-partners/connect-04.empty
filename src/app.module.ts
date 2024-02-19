@@ -1,8 +1,8 @@
 
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { Module } from '@nestjs/common'
-import { PermissionsModule } from './modules/permissions/permissions.module' // Added line
-import { AttendanceModule } from './modules/attendance/attendance.module'
+import { PermissionsModule } from './modules/permissions/permissions.module'
+import { AttendanceModule } from './modules/attendance/attendance.module.ts' // Modified line
 import { CacheModule } from '@nestjs/cache-manager'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { APP_FILTER } from '@nestjs/core'
@@ -22,12 +22,13 @@ import configs from './configs/index'
 import modules from './modules/index'
 import { HttpExceptionFilter } from './filters/http_exception.filter'
 
-const additionalModules = [PermissionsModule]; // Added line
+const additionalModules = [PermissionsModule];
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
-    AttendanceModule, TypeOrmModule.forRootAsync({
+    AttendanceModule, // Modified line
+    TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize()
@@ -59,7 +60,7 @@ const additionalModules = [PermissionsModule]; // Added line
     }),
     CacheModule.register({ isGlobal: true }),
     ShareModule,
-    ...modules, ...additionalModules, // Modified line
+    ...modules, ...additionalModules,
   ],
   providers: [
     {

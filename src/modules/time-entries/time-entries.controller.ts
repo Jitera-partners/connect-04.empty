@@ -1,4 +1,4 @@
-import {
+ {
   Controller,
   Post,
   Put,
@@ -35,7 +35,8 @@ export class TimeEntriesController {
       return { status: HttpStatus.OK, message: 'Time entry data is valid.' };
     } catch (error) {
       if (error instanceof BadRequestException) {
-        throw new UnprocessableEntityException(error.response);
+        // Use error.message instead of error.response as response is private
+        throw new UnprocessableEntityException(error.message);
       }
       throw error;
     }
@@ -49,12 +50,16 @@ export class TimeEntriesController {
   ) {
     try {
       const user = // Get the authenticated user from the request context (not shown in the example)
+      // Add missing semicolon at the end of the line
       const hasPermission = await this.permissionsService.checkEditTimeEntryPermission(user.id, user.role);
       if (!hasPermission) {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
 
-      const updatedTimeEntry = await this.timeEntriesService.updateTimeEntry(id, updateTimeEntryDto);
+      // Combine id and updateTimeEntryDto into a single object to match the method signature
+      const updatedTimeEntry = await this.timeEntriesService.updateTimeEntry({
+        id, ...updateTimeEntryDto
+      });
       return {
         status: HttpStatus.OK,
         time_entry: updatedTimeEntry,

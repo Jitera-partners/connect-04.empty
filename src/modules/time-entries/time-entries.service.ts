@@ -1,10 +1,10 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+ { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TimeEntryRepository } from 'src/repositories/time-entries.repository';
 import { TimeEntry } from 'src/entities/time_entries';
 import { UpdateTimeEntryDto } from './dto/update-time-entry.dto';
 import { ValidateTimeEntryDto } from './dto/validate-time-entry.dto';
-import { ValidateTimeEntry } from '/src/shared/validators/validate-time-entry.validator';
+import { ValidateTimeEntry } from '../../shared/validators/validate-time-entry.validator';
 
 @Injectable()
 export class TimeEntriesService {
