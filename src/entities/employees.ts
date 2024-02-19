@@ -45,16 +45,12 @@ export class Employee {
   @Column({ nullable: true, type: 'varchar' })
   email: string;
 
-  @Column({ nullable: true, type: 'integer' })
-  user_id: number;
+  @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.employee, { cascade: true })
+  time_sheets: TimeSheet[];
 
   @OneToOne(() => User, (user) => user.employee, { onDelete: 'CASCADE', cascade: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
-
-  @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.employee, { cascade: true })
-  @JoinColumn({ name: 'employee_id' })
-  time_sheets: TimeSheet[];
 
   @OneToMany(() => CheckIn, (checkIn) => checkIn.employee, { cascade: true })
   @JoinColumn({ name: 'employee_id' })

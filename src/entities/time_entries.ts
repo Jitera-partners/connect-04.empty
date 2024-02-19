@@ -1,3 +1,4 @@
+
 import {
   Entity,
   Column,
@@ -8,7 +9,6 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '@entities/users';
-import { Employee } from '@entities/employees';
 
 @Entity('time_entries')
 export class TimeEntry {
@@ -39,13 +39,7 @@ export class TimeEntry {
   @Column({ nullable: true, type: 'integer' })
   user_id: number;
 
-  @Column({ nullable: true, type: 'integer' })
-  employee_id: number;
-
-  @ManyToOne(() => Employee, (employee) => employee.time_entries)
-  @JoinColumn({ name: 'employee_id' })
-  employee: Employee;
-
+  // Removed duplicate employee property
 
   @ManyToOne(() => User, (user) => user.time_entries, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

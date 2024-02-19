@@ -63,9 +63,8 @@ export class User {
   permission: Permission;
 
   // Removed duplicate employee declaration
-
-  @OneToOne(() => Employee, (employee) => employee.user, { onDelete: 'CASCADE' })
-  employee: Employee;
+  // @OneToOne(() => Employee, (employee) => employee.user, { onDelete: 'CASCADE' })
+  // employee: Employee;
 }
 
 export { RoleEnum };
