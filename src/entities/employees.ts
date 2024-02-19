@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { CheckIn } from '@entities/check_ins';
+import { AttendanceRecord } from '@entities/attendance_records';
 
 @Entity('employees')
 export class Employee {
@@ -32,7 +33,19 @@ export class Employee {
   @Column({ nullable: true, type: 'boolean', default: false })
   logged_in: boolean = false;
 
+  @Column({ nullable: true, type: 'varchar' })
+  name: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  email: string;
+
   @OneToMany(() => CheckIn, (checkIn) => checkIn.employee, { cascade: true })
   @JoinColumn({ name: 'employee_id' })
   check_ins: CheckIn[];
+
+  @OneToMany(() => AttendanceRecord, (attendanceRecord) => attendanceRecord.employee, {
+    cascade: true,
+  })
+  @JoinColumn({ name: 'employee_id' })
+  attendance_records: AttendanceRecord[];
 }
