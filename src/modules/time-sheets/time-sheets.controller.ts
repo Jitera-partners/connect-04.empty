@@ -34,7 +34,7 @@ export class TimeSheetsController {
   async viewPastTimeSheets(@Query() query: ViewPastTimeSheetsDto) {
     try {
       const { user_id, selectedMonth: month, selectedYear: year } = query;
-      const timeSheets = await this.timeSheetsService.viewPastTimeSheets({ userId: user_id, selectedMonth: month, selectedYear: year });
+      const timeSheets = await this.timeSheetsService.viewPastTimeSheets({ user_id: user_id, selectedMonth: month, selectedYear: year });
       return {
         status: HttpStatus.OK,
         time_sheets: timeSheets.timeEntries,

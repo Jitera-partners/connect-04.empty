@@ -1,3 +1,4 @@
+
 import { Injectable } from '@nestjs/common';
 import { TimeSheetRepository } from 'src/repositories/time-sheets.repository';
 import { ViewPastTimeSheetsDto } from './dto/view-past-time-sheets.dto';
@@ -12,7 +13,7 @@ export class TimeSheetsService {
   constructor(private readonly timeSheetRepository: TimeSheetRepository) {}
 
   async viewPastTimeSheets(params: ViewPastTimeSheetsDto): Promise<{ timeEntries: TimeSheet[]; message?: string; }> {
-    const { userId, selectedMonth, selectedYear } = params;
+    const { user_id, selectedMonth, selectedYear } = params; // Changed userId to user_id
     const currentDate = moment();
     const selectedDate = moment(`${selectedYear}-${selectedMonth}`, 'YYYY-MM');
 
@@ -22,10 +23,10 @@ export class TimeSheetsService {
 
     const timeEntries = await this.timeSheetRepository.find({
       where: {
-        user_id: userId,
+        user_id: user_id, // Changed userId to user_id
         date: Between(
-          selectedDate.startOf('month').format('YYYY-MM-DD'),
-          selectedDate.endOf('month').format('YYYY-MM-DD')
+          new Date(selectedDate.startOf('month').format('YYYY-MM-DD')), // Wrapped with new Date()
+          new Date(selectedDate.endOf('month').format('YYYY-MM-DD')) // Wrapped with new Date()
         )
       }
     });
@@ -40,6 +41,12 @@ export class TimeSheetsService {
       checkInTime: entry.check_in_time,
       checkOutTime: entry.check_out_time,
       totalHours: entry.total_hours
+    })).map(entry => ({ // Added map to include id, created_at, updated_at, and day_type
+      ...entry,
+      id: entry.id,
+      created_at: entry.created_at,
+      updated_at: entry.updated_at,
+      day_type: entry.dayType
     }));
 
     return { timeEntries: formattedTimeEntries };
@@ -107,6 +114,6 @@ export class TimeSheetsService {
       where: { user_id, date: Between(startDate, endDate) }
     });
 
-    return { status: 200, time_sheets: timeSheets };
+    return { status: 200, time_sheets: timeSheets.map(ts => ({ ...ts, day_type: ts.dayType })) }; // Added map to include day_type
   }
 }
