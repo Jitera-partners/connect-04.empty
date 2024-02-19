@@ -6,8 +6,17 @@ import {
   UpdateDateColumn,
   OneToMany,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { TimeSheet } from '@entities/time_sheets';
+import { TimeEntry } from '@entities/time_entries';
+import { Permission } from '@entities/permissions';
+
+enum RoleEnum {
+  EMPLOYEE = 'employee',
+  MANAGER = 'manager',
+  ADMIN = 'admin',
+}
 
 @Entity('users')
 export class User {
@@ -32,7 +41,24 @@ export class User {
   @Column({ nullable: true, type: 'varchar' })
   email: string;
 
+  @Column({
+    nullable: true,
+    type: 'enum',
+    enum: ['employee', 'manager', 'admin'],
+    default: 'employee',
+  })
+  role: `${RoleEnum}` = 'employee';
+
   @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.user, { cascade: true })
   @JoinColumn({ name: 'user_id' })
   time_sheets: TimeSheet[];
+
+  @OneToMany(() => TimeEntry, (timeEntry) => timeEntry.user, { cascade: true })
+  @JoinColumn({ name: 'user_id' })
+  time_entries: TimeEntry[];
+
+  @OneToOne(() => Permission, (permission) => permission.user, { cascade: true })
+  permission: Permission;
 }
+
+export { RoleEnum };
