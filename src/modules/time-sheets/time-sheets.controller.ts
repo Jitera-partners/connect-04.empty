@@ -1,3 +1,4 @@
+
 import { Controller, Get, Query, UseGuards, ParseIntPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { TimeSheetsService } from './time-sheets.service';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -62,8 +63,8 @@ export class TimeSheetsController {
   @UseGuards(AuthGuard)
   async viewSelectedMonthTimeSheet(@Query() query: ViewSelectedMonthTimeSheetDto) {
     try {
-      const { user_id, month } = query;
-      const timeSheets = await this.timeSheetsService.viewSelectedMonthTimeSheet({ user_id, month });
+      const { user_id, month, year } = query;
+      const timeSheets = await this.timeSheetsService.viewSelectedMonthTimeSheet({ user_id, month, year });
       return {
         status: HttpStatus.OK,
         time_sheets: timeSheets

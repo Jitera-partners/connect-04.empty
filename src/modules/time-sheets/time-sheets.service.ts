@@ -43,9 +43,11 @@ export class TimeSheetsService {
       id: entry.id,
       created_at: entry.created_at,
       updated_at: entry.updated_at,
-      // Add the missing 'user_id' and 'user' properties to match the TimeSheet type
       user_id: entry.user_id,
-      user: entry.user
+      user: entry.user,
+      // Add the missing 'employee_id' and 'employee' properties to match the TimeSheet type
+      employee_id: entry.employee_id,
+      employee: entry.employee
     }));
 
     return { timeEntries: formattedTimeEntries };
