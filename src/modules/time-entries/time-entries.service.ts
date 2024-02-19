@@ -24,7 +24,8 @@ export class TimeEntriesService {
       }
 
       // Before updating, validate the check-in and check-out times
-      const isValid = ValidateTimeEntry(check_in.toISOString(), check_out.toISOString()); // Updated to use toISOString()
+      const validationOptions = { check_in: check_in.toISOString(), check_out: check_out.toISOString() };
+      const isValid = ValidateTimeEntry(validationOptions); // Corrected to pass an object
       if (!isValid) {
         throw new BadRequestException('Validation failed: check-in time must be before check-out time.'); // Updated exception
       }
@@ -44,8 +45,8 @@ export class TimeEntriesService {
   async validateTimeEntry(dto: ValidateTimeEntryDto): Promise<string> {
     const { check_in, check_out } = dto;
 
-    const isValid = ValidateTimeEntry(check_in.toISOString(), check_out.toISOString()); // Updated to use toISOString()
-    if (!isValid) {
+    const validationOptions = { check_in: check_in.toISOString(), check_out: check_out.toISOString() };
+    if (!ValidateTimeEntry(validationOptions)) { // Corrected to pass an object
       throw new BadRequestException('Validation failed: check-in time must be before check-out time.'); // Updated exception
     }
 

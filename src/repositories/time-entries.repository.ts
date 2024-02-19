@@ -1,8 +1,7 @@
 
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository, UpdateResult } from 'typeorm';
 import { TimeEntry } from 'src/entities/time_entries';
-import { EntityRepository, Repository, UpdateResult } from 'typeorm';
 
 export interface UpdateTimeEntryDto {
   id: number;
@@ -15,9 +14,9 @@ export interface UpdateTimeEntryDto {
 @Injectable()
 export class TimeEntriesRepository extends Repository<TimeEntry> {
   constructor(
-    @InjectRepository(TimeEntry) private readonly timeEntryRepository: Repository<TimeEntry>
+    manager: EntityManager
   ) {
-    super();
+    super(TimeEntry, manager);
   }
 
   async updateTimeEntry(updateTimeEntryDto: UpdateTimeEntryDto): Promise<string> {
