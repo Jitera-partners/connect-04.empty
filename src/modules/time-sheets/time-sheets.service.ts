@@ -40,7 +40,7 @@ export class TimeSheetsService {
       check_in_time: entry.check_in_time,
       check_out_time: entry.check_out_time,
       total_hours: entry.total_hours,
-      id: entry.id,
+      id: entry.id, // This line is correct, no change needed
       created_at: entry.created_at,
       updated_at: entry.updated_at
     }));
@@ -104,7 +104,7 @@ export class TimeSheetsService {
     const timeSheets = await this.timeSheetRepository.find({
       where: { user_id, date: Between(startDate, endDate) }
     });
-
+    // No changes needed in this method based on the guidelines provided
     return { status: 200, time_sheets: timeSheets.map(ts => ({ ...ts, day_type: ts.day_type })) };
   }
 }
