@@ -33,7 +33,7 @@ export class TimeSheetsController {
   @UseGuards(AuthGuard)
   async viewPastTimeSheets(@Query() query: ViewPastTimeSheetsDto) {
     try {
-      const { user_id, month, year } = query;
+      const { user_id, selectedMonth: month, selectedYear: year } = query;
       const timeSheets = await this.timeSheetsService.viewPastTimeSheets({ userId: user_id, selectedMonth: month, selectedYear: year });
       return {
         status: HttpStatus.OK,

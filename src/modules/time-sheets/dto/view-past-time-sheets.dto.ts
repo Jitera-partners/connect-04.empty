@@ -1,9 +1,9 @@
-import { IsInt, IsNumber, Min, Max, IsDate, IsString, ValidateIf, Matches } from 'class-validator';
+
+import { IsInt, IsNumber, Min, Max, IsString, ValidateIf, Matches, IsUUID } from 'class-validator';
 
 export class ViewPastTimeSheetsDto {
-  @IsInt()
-  @IsNumber()
-  userId: number;
+  @IsUUID()
+  user_id: string;
 
   @IsString()
   @ValidateIf(o => isNaN(parseInt(o.selectedMonth)))
@@ -11,26 +11,15 @@ export class ViewPastTimeSheetsDto {
     message: 'Invalid month format.'
   })
   @ValidateIf(o => !isNaN(parseInt(o.selectedMonth)))
-  @IsInt()
   @Min(1)
   @Max(12)
-  selectedMonth: number | string;
+  selectedMonth: number;
 
   @IsString()
   @Matches(/^(19[0-9]{2}|20[0-9]{2})$/, {
     message: 'Invalid year format.'
   })
   selectedYear: number | string;
-
-  // Additional validations for date can be added here if necessary
-}
-  @IsInt()
-  @Min(1)
-  @Max(12)
-  selectedMonth: number;
-
-  @IsInt()
-  selectedYear: number;
 
   // Additional validations for date can be added here if necessary
 }

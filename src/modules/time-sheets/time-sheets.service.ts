@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TimeSheetRepository } from 'src/repositories/time-sheets.repository';
 import { ViewPastTimeSheetsDto } from './dto/view-past-time-sheets.dto';
 import { ViewSelectedMonthTimeSheetDto } from './dto/view-selected-month-time-sheet.dto'; // Added import
-import { TimeSheet } from 'src/entities/time_sheets';
+import { TimeSheet, DayTypeEnum } from 'src/entities/time_sheets';
 import * as moment from 'moment';
 import { Between } from 'typeorm';
 import { getCurrentMonthAndYear } from '../../utils/date';
@@ -42,7 +42,7 @@ export class TimeSheetsService {
       totalHours: entry.total_hours
     }));
 
-    return { timeEntries: formattedTimeEntries };
+    return { timeEntries: formattedTimeEntries as TimeSheet[] };
   }
 
   async viewCurrentMonthTimeSheet(userId: number): Promise<{ status: number; time_sheets: any[]; message?: string; }> {

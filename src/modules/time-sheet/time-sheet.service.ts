@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Raw } from 'typeorm';
-import { TimeSheetRepository } from '/src/repositories/time-sheets.repository.ts';
-import { getCurrentMonthAndYear } from '/src/utils/date.ts';
-import { TimeSheet } from '/src/entities/time_sheets.ts';
+import { TimeSheetRepository } from '../../repositories/time-sheets.repository';
+import { getCurrentMonthAndYear } from '../../utils/date';
+import { TimeSheet } from '../../entities/time_sheets';
 
 @Injectable()
 export class TimeSheetService {
