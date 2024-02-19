@@ -1,19 +1,18 @@
 
 import {
   Entity,
-  OneToMany,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { User } from '@entities/users';
 import { CheckIn } from '@entities/check_ins';
 import { AttendanceRecord } from '@entities/attendance_records';
 import { TimeEntry } from '@entities/time_entries';
-import { TimeSheet } from '@entities/time_sheets';
 
 @Entity('employees')
 export class Employee {
@@ -44,10 +43,6 @@ export class Employee {
   @Column({ nullable: true, type: 'varchar' })
   email: string;
 
-  @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.employee, { cascade: true })
-  @JoinColumn({ name: 'employee_id' })
-  time_sheets: TimeSheet[];
-
   @Column({ nullable: true, type: 'integer' })
   user_id: number;
 
@@ -68,5 +63,4 @@ export class Employee {
   @OneToMany(() => TimeEntry, (timeEntry) => timeEntry.employee, { cascade: true })
   @JoinColumn({ name: 'employee_id' })
   time_entries: TimeEntry[];
-
 }
