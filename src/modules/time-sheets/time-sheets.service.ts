@@ -45,8 +45,8 @@ export class TimeSheetsService {
     return { timeEntries: formattedTimeEntries };
   }
 
-  async viewCurrentMonthTimeSheet(userId: number): Promise<{ timeEntries: TimeSheet[]; message?: string; }> {
-    const { month, year } = getCurrentMonthAndYear();
+  async viewCurrentMonthTimeSheet(userId: number): Promise<{ status: number; time_sheets: any[]; message?: string; }> {
+    const { month, year } = getCurrentMonthAndYear(); // Use the utility function to get the current month and year
     const startDate = moment(`${year}-${month}-01`, 'YYYY-MM-DD').startOf('month').toDate();
     const endDate = moment(startDate).endOf('month').toDate();
 
@@ -56,22 +56,27 @@ export class TimeSheetsService {
         date: Between(startDate, endDate)
       },
       order: {
-        date: 'ASC'
+        date: 'ASC' // Ensure the time entries are ordered by date in ascending order
       }
     });
 
     if (timeEntries.length === 0) {
-      return { timeEntries, message: 'No time sheet records found for the current month.' };
+      return { status: 200, time_sheets: [], message: 'No time sheet records found for the current month.' };
     }
 
-    const formattedTimeEntries = timeEntries.map(entry => ({
-      date: entry.date,
-      dayType: entry.day_type,
-      checkInTime: entry.check_in_time,
-      checkOutTime: entry.check_out_time,
-      totalHours: entry.total_hours || moment(entry.check_out_time).diff(moment(entry.check_in_time), 'hours', true)
-    }));
+    // Format the time entries to match the required response structure
+    const formattedTimeEntries = timeEntries.map(entry => {
+      return {
+        id: entry.id,
+        date: entry.date,
+        dayType: entry.day_type,
+        checkInTime: entry.check_in_time,
+        checkOutTime: entry.check_out_time,
+        totalHours: entry.total_hours,
+        user_id: entry.user_id
+      };
+    });
 
-    return { timeEntries: formattedTimeEntries };
+    return { status: 200, time_sheets: formattedTimeEntries };
   }
 }

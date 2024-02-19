@@ -1,5 +1,5 @@
 import { IsInt, IsNotEmpty } from 'class-validator';
-import { User } from '../../../entities/users.ts';
+// User entity import removed as it is not used in the DTO
 
 export class ViewCurrentMonthTimeSheetDto {
     @IsInt({ message: 'User ID must be an integer.' })
