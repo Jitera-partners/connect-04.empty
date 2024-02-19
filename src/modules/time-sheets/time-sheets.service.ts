@@ -1,7 +1,7 @@
-
 import { Injectable } from '@nestjs/common';
 import { TimeSheetRepository } from 'src/repositories/time-sheets.repository';
 import { ViewPastTimeSheetsDto } from './dto/view-past-time-sheets.dto';
+import { ViewSelectedMonthTimeSheetDto } from './dto/view-selected-month-time-sheet.dto'; // Added import
 import { TimeSheet } from 'src/entities/time_sheets';
 import * as moment from 'moment';
 import { Between } from 'typeorm';
@@ -72,11 +72,41 @@ export class TimeSheetsService {
         dayType: entry.day_type,
         checkInTime: entry.check_in_time,
         checkOutTime: entry.check_out_time,
-        totalHours: entry.total_hours,
+        totalHours: entry.total_hours || moment(entry.check_out_time).diff(moment(entry.check_in_time), 'hours', true), // Added calculation for totalHours if not present
         user_id: entry.user_id
       };
     });
 
     return { status: 200, time_sheets: formattedTimeEntries };
+  }
+
+  // Added new method
+  async viewSelectedMonthTimeSheet(params: ViewSelectedMonthTimeSheetDto): Promise<{ status: number; time_sheets?: TimeSheet[]; message?: string; }> {
+    const { user_id, month } = params;
+
+    if (!user_id) {
+      throw new Error('User ID is required.');
+    }
+
+    if (typeof user_id !== 'number') {
+      throw new Error('User ID must be an integer.');
+    }
+
+    if (!month) {
+      throw new Error('Month is required.');
+    }
+
+    if (!moment(month, 'YYYY-MM', true).isValid()) {
+      throw new Error('Month must be in the format YYYY-MM.');
+    }
+
+    const startDate = moment(month).startOf('month').format('YYYY-MM-DD');
+    const endDate = moment(month).endOf('month').format('YYYY-MM-DD');
+
+    const timeSheets = await this.timeSheetRepository.find({
+      where: { user_id, date: Between(startDate, endDate) }
+    });
+
+    return { status: 200, time_sheets: timeSheets };
   }
 }
