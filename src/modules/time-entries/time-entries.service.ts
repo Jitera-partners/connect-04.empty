@@ -1,4 +1,5 @@
- { Injectable, BadRequestException } from '@nestjs/common';
+
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TimeEntryRepository } from 'src/repositories/time-entries.repository';
 import { TimeEntry } from 'src/entities/time_entries';
@@ -23,8 +24,7 @@ export class TimeEntriesService {
       }
 
       // Before updating, validate the check-in and check-out times
-      const validator = new ValidateTimeEntry();
-      const isValid = validator.validate(check_in, check_out);
+      const isValid = ValidateTimeEntry(check_in, check_out);
       if (!isValid) {
         throw new BadRequestException('Validation failed: check-in time must be before check-out time.');
       }
@@ -42,12 +42,11 @@ export class TimeEntriesService {
   }
 
   async validateTimeEntry(dto: ValidateTimeEntryDto): Promise<string> {
-    const validator = new ValidateTimeEntry();
     const { check_in, check_out } = dto;
 
-    const isValid = validator.validate(check_in, check_out);
+    const isValid = ValidateTimeEntry(check_in, check_out);
     if (!isValid) {
-      throw new BadRequestException('Validation failed: check-in time must be before check-out time.');
+      throw a BadRequestException('Validation failed: check-in time must be before check-out time.');
     }
 
     // If the validation passes, you can proceed with the next business logic here

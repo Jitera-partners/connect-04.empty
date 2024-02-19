@@ -2,7 +2,7 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { Module } from '@nestjs/common'
 import { PermissionsModule } from './modules/permissions/permissions.module'
-import { AttendanceModule } from './modules/attendance/attendance.module.ts' // Modified line
+import { AttendanceModule } from './modules/attendance/attendance.module' // Fixed import
 import { CacheModule } from '@nestjs/cache-manager'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { APP_FILTER } from '@nestjs/core'
@@ -27,7 +27,7 @@ const additionalModules = [PermissionsModule];
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
-    AttendanceModule, // Modified line
+    AttendanceModule, // Fixed import
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options) => {
