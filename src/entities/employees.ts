@@ -1,3 +1,4 @@
+
 import {
   Entity,
   OneToMany,
@@ -7,7 +8,6 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
-  OneToMany,
 } from 'typeorm';
 import { User } from '@entities/users';
 import { CheckIn } from '@entities/check_ins';
@@ -48,7 +48,6 @@ export class Employee {
   @JoinColumn({ name: 'employee_id' })
   time_sheets: TimeSheet[];
 
-
   @Column({ nullable: true, type: 'integer' })
   user_id: number;
 
@@ -70,7 +69,4 @@ export class Employee {
   @JoinColumn({ name: 'employee_id' })
   time_entries: TimeEntry[];
 
-  @OneToMany(() => TimeSheet, (timeSheet) => timeSheet.employee, { cascade: true })
-  @JoinColumn({ name: 'employee_id' })
-  time_sheets: TimeSheet[];
 }
