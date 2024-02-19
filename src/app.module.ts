@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { Module } from '@nestjs/common'
+import { AttendanceModule } from './modules/attendance/attendance.module'
 import { CacheModule } from '@nestjs/cache-manager'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { APP_FILTER } from '@nestjs/core'
@@ -22,7 +23,7 @@ import { HttpExceptionFilter } from './filters/http_exception.filter'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [configs] }),
-    TypeOrmModule.forRootAsync({
+    AttendanceModule, TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options) => {
         const dataSource = await new DataSource(options).initialize()
