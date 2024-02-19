@@ -40,9 +40,12 @@ export class TimeSheetsService {
       check_in_time: entry.check_in_time,
       check_out_time: entry.check_out_time,
       total_hours: entry.total_hours,
-      id: entry.id, // This line is correct, no change needed
+      id: entry.id,
       created_at: entry.created_at,
-      updated_at: entry.updated_at
+      updated_at: entry.updated_at,
+      // Add the missing 'user_id' and 'user' properties to match the TimeSheet type
+      user_id: entry.user_id,
+      user: entry.user
     }));
 
     return { timeEntries: formattedTimeEntries };
