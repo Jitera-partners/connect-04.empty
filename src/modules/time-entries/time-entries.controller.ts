@@ -47,7 +47,7 @@ export class TimeEntriesController {
   @UseGuards(AuthGuard)
   async updateTimeEntry(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateTimeEntryDto: UpdateTimeEntryDto,
+    @Body() updateTimeEntryDto: UpdateTimeEntryDto
   ) {
     try {
       const user = // Get the authenticated user from the request context (not shown in the example)
